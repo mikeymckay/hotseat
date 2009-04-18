@@ -1,0 +1,100 @@
+<html>
+<script type="text/javascript" src="gears_init.js"></script>
+<script type="text/javascript" src="uuid.js"></script>
+<script type="text/javascript" src="json2.js"></script>
+<script type="text/javascript" src="jquery.js"></script>
+<script>
+var localServer;
+var store;
+var db;
+
+var couchdb_name = "patient_database";
+
+function createDocument(key,value){
+  //db.execute('INSERT INTO hash (key, value) VALUES (?,?)',[key,value]);
+  db.execute('INSERT INTO hash (key, value) VALUES ("'+key+'","'+value+'")');
+}
+
+function concatenateResult(result){
+  var output = "";
+  while (result.isValidRow()) {
+    output += result.fieldName(0) + ' == ' + result.field(0);
+    result.next();
+  }
+  result.close();
+  return output;
+}
+
+function getValueReset(id){
+  var value = $('#'+id).val();
+  $('#'+id).val(""); // reset input box
+  return value
+}
+
+$(document).ready(function () {
+
+
+  // setup gears
+  if (!window.google || !google.gears) {
+    alert("NOTE:  You must install Gears first.");
+  } 
+  else {
+    localServer = google.gears.factory.create('beta.localserver', '1.0');
+    store = localServer.createManagedStore('manifest.json');
+
+    db = google.gears.factory.create('beta.database', '1.0');
+    db.open('my-database');
+    db.execute('CREATE TABLE IF NOT EXISTS ' + 'hash (key varchar(255), value varchar(255))');
+  }
+
+  // setup couchdb
+ 
+  url = "/" + couchdb_name
+  $.ajax({url:url,type:'put' })
+
+
+  // display local data
+  var content = document.getElementById("content")
+  result = db.execute('SELECT key,value FROM hash');
+  while (result.isValidRow()) {
+    content.innerHTML += result.field(0) + ' => ' + result.field(1) + '<br/>';
+    result.next();
+  }
+
+  $("#save").click(function() {
+    patientName = getValueReset('patient_name');
+    diagnosis = getValueReset('diagnosis');
+    //put it in the local db
+    createDocument(new UUID(), "{'name':'" + patientName + "', 'diagnosis':'"+ diagnosis +"'}")
+  });
+
+  $("#push").click(function() {
+    result = db.execute('SELECT key,value FROM hash');
+    while (result.isValidRow()) {
+      document_id = result.field(0);
+      document_contents = result.field(1);
+
+      //$.ajax({url:'/',type:'put', async:false}).responseText
+      var url = '/' + couchdb_name + '/' + document_id
+      // a lot of serializing and unserializing going on here
+      var data = eval('('+document_contents+')')
+      data._id = document_id
+      data = JSON.stringify(data)
+      $.ajax({url:url,type:'put', data:data })
+
+      result.next();
+    }
+
+  });
+});
+</script>
+<body>
+Patient Name: <input id='patient_name' type='text'></input><br/>
+Diagnosis: <input id='diagnosis' type='text'></input><br/>
+<div id='save'>SAVE</div>
+<div id='push'>PUSH</div>
+<div id='pull'>PULL</div>
+<div id='content'>
+</div>
+</body>
+</html>

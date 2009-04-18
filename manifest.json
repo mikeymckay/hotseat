@@ -1,0 +1,11 @@
+{
+  "betaManifestVersion": 1,
+  "version": "first",
+  "entries": [
+      { "url": "index.html"},
+      { "url": "gears_init.js"},
+      { "url": "json.js"},
+      { "url": "jquery.js"},
+      { "url": "uuid.js"}
+    ]
+}
