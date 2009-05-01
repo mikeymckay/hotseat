@@ -1,0 +1,20 @@
+Concept Paper for a next generation browser based data collection tool
+
+Electronic data collection and retrieval should be simple. Anybody should be able to create a form, and that form should be usable on any device with a web browser. But using a web browser shouldn't require access to the internet in order to answer a few questions or review answers to questions already captured. It should work offline. Finally, data should synchronize itself. Even if data has been collected by different people on different devices.
+
+This vision consists of three features: form editing, offline browsing, database synchronizing. The result of some new technology and data standards means that this vision can be achieved by combining a few of these technologies and standards together.
+
+Form creation is perhaps the hardest problem to solve, but luckily one that already has many solutions fitting a wide range of use cases. From complex xforms logic to simple html forms, there are many form editors that can create a form that can be rendered in a web browser. While very complex forms might require a technically savvy creator, this application should require little or no training for people with basic computing skills.
+
+Offline web browsing is a relatively new technology. It allows for websites to store webpages and data within the web browser. This means that even if the connection to the internet is lost or unavailable the application and even the data is still available. In most cases the user doesn't even have to know whether or not the internet is available. The user is able to collect data and review previously collected data regardless of connectivity. The specific technology that makes this possible was originally created by Google and was called Gears. It is now a standard feature of HTML5 and is available in modern web browsers including firefox, the browser on the iphone, the g1 (android) and windows based phones.
+
+Database synchronization is the final piece of the puzzle. Distributed databases were originally developed to share workload across machines, but because of their constant need to stay synchronized, elegant synchronization approaches were developed. CouchDB is a database that uses a distributed architecture and therefore offers virtually transparent synchronization capability. Its aggressive approach to indexing, which is based on Google's searching scheme, also means that data retrieval is extremely fast. 
+
+By combining these three technologies it is possible to create a novel data collection system that is:
+
+* easy to use
+* will work on a wide array of devices
+* can be used in both online and offline contexts
+* enables trivial synchronization
+
+Furthermore, by using brower based technologies it becomes easy to leverage existing applications and libraries. For instance, the application could be integrated with google documents to enable simple graph building or spreadsheet manipulation. Another possibility would be to offer data validation, skip logic and context based decision support using existing libraries. Or perhaps a touchscreen library could be used to make the sample application rendered as a touchscreen capable web application.
