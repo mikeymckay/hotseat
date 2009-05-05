@@ -31,8 +31,48 @@ function getValueReset(id){
   return value
 }
 
+function couchRequest(url, getDeletePostPut, data){
+  //$.ajax({url:'/',type:'put', async:false}).responseText
+  // a lot of serializing and unserializing going on here
+  data = eval('('+data+')')
+  data = JSON.stringify(data)
+  return eval('('+$.ajax({url:url,type:getDeletePostPut, data:data, async:false }).responseText + ')')
+}
+
+function getLocalData(){
+  var buffer = ""
+  var result = db.execute('SELECT key,value FROM hash');
+  while (result.isValidRow()) {
+    buffer += "<li>" + result.field(0) + ' => ' + result.field(1);
+    result.next();
+  }
+  return buffer
+}
+
+function getRemoteData(){
+  var buffer = ""
+  url = "/" + couchdb_name + "/_all_docs"
+  rows = couchRequest(url, "get").rows
+  for(i=0; i<rows.length; i++){
+//    buffer += "<li>" + JSON.stringify(rows[i]);
+
+    url = "/" + couchdb_name + "/" + rows[i].id;
+    buffer += "<li>" + JSON.stringify(couchRequest(url, "get"));
+  }
+  return buffer;
+}
+
+function clearLocalDB(){
+  db.execute('DELETE FROM hash');
+}
+
+function clearRemoteDB(){
+
+}
+
 $(document).ready(function () {
 
+  $('online?').innerHTML = navigator.onLine ? "Online" : "Offline";
 
   // setup gears
   if (!window.google || !google.gears) {
@@ -48,18 +88,11 @@ $(document).ready(function () {
   }
 
   // setup couchdb
- 
   url = "/" + couchdb_name
   $.ajax({url:url,type:'put' })
 
-
-  // display local data
-  var content = document.getElementById("content")
-  result = db.execute('SELECT key,value FROM hash');
-  while (result.isValidRow()) {
-    content.innerHTML += result.field(0) + ' => ' + result.field(1) + '<br/>';
-    result.next();
-  }
+  document.getElementById("localData").innerHTML = getLocalData();
+  document.getElementById("remoteData").innerHTML = getRemoteData();
 
   $("#save").click(function() {
     patientName = getValueReset('patient_name');
@@ -85,16 +118,56 @@ $(document).ready(function () {
       result.next();
     }
 
+
   });
+
+  $("#pull").click(function() {
+    clearLocalDB();
+
+    url = "/" + couchdb_name + "/_all_docs"
+    rows = couchRequest(url, "get").rows
+    for(i=0; i<rows.length; i++){
+      url = "/" + couchdb_name + "/" + rows[i].id;
+      result = couchRequest(url, "get")
+      createDocument(result._id, { name:result.name , diagnosis: result.diagnosis} )
+    }
+
+
+  })
 });
 </script>
+<style>
+.data{
+  font-size:8pt;
+}
+
+.button{
+  background-color:black;
+  color: white;
+  font-weight: bold;
+  width: 100px;
+  border: thick solid gray;
+}
+</style>
 <body>
+
+<div id='status'>Currently <span id='online?'>unknown</span></div>
+
 Patient Name: <input id='patient_name' type='text'></input><br/>
 Diagnosis: <input id='diagnosis' type='text'></input><br/>
-<div id='save'>SAVE</div>
-<div id='push'>PUSH</div>
-<div id='pull'>PULL</div>
-<div id='content'>
+<span class='button' id='save'>Save</span>
+<br/>
+<br/>
+<span class='button' id='push'>Push</span>
+<span class='button' id='pull'>Pull</span>
+<br/>
+<div id="localDataBox">
+Local Data:
+<div class='data' id='localData'></div>
+</div>
+<div id="remoteDataBox">
+Remote Data:
+<div class='data' id='remoteData'></div>
 </div>
 </body>
 </html>
