@@ -1,6 +1,10 @@
+For more information about the concept go here: http://wiki.github.com/mikeymckay/hotseat/the-concept
+
 Needs google gears.
 Needs couchdb installed.
 Put this stuff in /usr/share/couchdb/www/ (softlink works).
 Then goto: http://localhost:5984/_utils/hotseat/index.html (need to specify index.html)
 
 This code is pure cowboy. Uploading it to github just because jeffrafter asked to see it.
+
+
