@@ -1,10 +1,11 @@
 h2. Gears/HTML5 + CouchDB = Offline syncable formentry
 
-For more information about the concept go here: http://wiki.github.com/mikeymckay/hotseat/the-concept
+For more information, check out "the concept page": http://wiki.github.com/mikeymckay/hotseat/the-concept.
 
+h3. Installation
 Needs google gears.
-Needs couchdb installed.
-Put this stuff in /usr/share/couchdb/www/ (softlink works).
+Needs couchdb installed and running.
+Put hotseat in /usr/share/couchdb/www/ (softlink works).
 Then goto: http://localhost:5984/_utils/hotseat/index.html (need to specify index.html)
 
 Warning, this code is pure cowboy so giddyup and happy trails.
