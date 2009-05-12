@@ -11,7 +11,8 @@ Needs couchdb installed and running.
 Put hotseat in /usr/share/couchdb/www/ (softlink works).
 Then goto: http://localhost:5984/_utils/hotseat/index.html (need to specify index.html)
 
-h4. Windows
+h4. Windows 
+(thanks Chris!)
 
 Download and install the  Erlang, Visual C++ 2008 redistributables (for openssl binary), and OpenSSL as per instructions at http://wiki.apache.org/couchdb/Windows_binary_installer
 
